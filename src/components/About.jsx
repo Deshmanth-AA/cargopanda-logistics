@@ -1,45 +1,17 @@
-import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { useGLTF, Stage, PerspectiveCamera } from "@react-three/drei";
+import React from "react";
 import SectionWrapper from "./SectionWrapper";
 import { aboutContent } from "../constants";
-import Carousel from "./Carousel";
-import { Shield, Zap, Heart, RefreshCcw, CheckCircle2 } from "lucide-react";
 
-const iconMap = [
-  <Heart key="heart" />, <Zap key="zap" />, <Shield key="shield" />, <RefreshCcw key="refresh" />, <CheckCircle2 key="check" />
+// Icon gradient backgrounds for glassmorphism cards
+const iconGradients = [
+  "bg-gradient-to-br from-[#E9762B] to-[#FF6B35]", // Orange
+  "bg-gradient-to-br from-[#0D4715] to-[#059669]", // Green
+  "bg-gradient-to-br from-[#3B82F6] to-[#8B5CF6]", // Blue to Purple
+  "bg-gradient-to-br from-[#EC4899] to-[#F59E0B]", // Pink to Orange
+  "bg-gradient-to-br from-[#10B981] to-[#06B6D4]", // Emerald to Cyan
 ];
 
-function TruckModel() {
-  const { scene } = useGLTF("/models/11.glb");
-  
-  // Check if mobile
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  
-  return (
-    <primitive 
-      object={scene} 
-      position={[10.5, -2.2, 0]} 
-      rotation={[0, -1.57, 0]} 
-      scale={7.5} 
-    />
-  );
-}
-
 const About = () => {
-  const carouselItems = aboutContent.values.map((val, i) => ({
-    id: i, title: val.title, description: val.desc, icon: iconMap[i],
-  }));
-
-  // Dynamic carousel width based on screen size
-  const getCarouselWidth = () => {
-    if (typeof window === 'undefined') return 800;
-    if (window.innerWidth < 640) return 320;
-    if (window.innerWidth < 768) return 400;
-    if (window.innerWidth < 1024) return 500;
-    return 800;
-  };
-
   return (
     <div className="bg-[#EBE1D1]">
       <SectionWrapper id="about" className="pb-2">
@@ -64,40 +36,71 @@ const About = () => {
         </div>
       </SectionWrapper>
 
-      <div className="relative pt-0 pb-4 -mt-12 md:-mt-20 bg-[#41644A]/5 overflow-hidden">
-        {/* Updated Heading */}
-        <div className="max-w-7xl mx-auto px-4 md:px-6 mb-6 md:mb-8 text-center">
-          <h3 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-[#0D4715] mb-3 md:mb-4">Our Core Values</h3>
-          <p className="max-w-2xl mx-auto text-[#41644A] text-sm md:text-base lg:text-lg font-medium leading-relaxed italic opacity-90">
-            Delivering trust, speed, and reliability.
-          </p>
-        </div>
-        
-        <div className="relative w-full max-w-7xl mx-auto h-[400px] sm:h-[500px] md:h-[650px] flex justify-center items-center px-2 md:px-4">
-          <div className="block md:hidden absolute inset-0 z-0 flex items-center justify-center">
-            <img 
-              src="/models/truck-static.png" 
-              alt="CargoPanda Logistics Truck" 
-              className="w-full h-full object-contain opacity-30 scale-75"
-            />
+      {/* Core Values Section with Modern Glassmorphism */}
+      <div className="relative py-12 md:py-16 lg:py-20 bg-gradient-to-br from-[#41644A]/20 via-[#EBE1D1] to-[#E9762B]/10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          {/* Section Heading */}
+          <div className="text-center mb-8 md:mb-12 lg:mb-16">
+            <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0D4715] mb-3 md:mb-4">
+              Our Core Values
+            </h3>
+            <p className="max-w-2xl mx-auto text-[#41644A] text-sm md:text-base lg:text-lg font-medium leading-relaxed italic opacity-90">
+              Delivering trust, speed, and reliability.
+            </p>
           </div>
-          {/* 3D Model - Optimized for mobile */}
-          <div className="hidden md:block absolute inset-0 z-0">
-            <Canvas dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
-              <PerspectiveCamera makeDefault position={[0, 0, 14]} fov={18} />
-              <Suspense fallback={null}>
-                <Stage environment="city" intensity={0.8} contactShadow={true} adjustCamera={false}>
-                  <TruckModel />
-                </Stage>
-              </Suspense>
-            </Canvas>
-          </div>
-          
-          {/* Carousel - Responsive positioning */}
-          <div className="absolute top-[5%] sm:top-[8%] md:top-[10%] left-1/2 -translate-x-1/2 w-[95%] sm:w-[85%] md:w-[82%] h-[70%] md:h-[60%] z-10 flex items-center justify-center">
-            <div style={{ height: "300px", width: "100%", display: "flex", justifyContent: "center" }} className="sm:h-[350px] md:h-[400px]">
-              <Carousel items={carouselItems} baseWidth={getCarouselWidth()} autoplay={true} loop={true} />
-            </div>
+
+          {/* Glassmorphism Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8">
+            {aboutContent.values.map((value, index) => {
+              const IconComponent = value.icon;
+              return (
+                <div
+                  key={index}
+                  className={`group relative bg-white/30 backdrop-blur-md rounded-2xl md:rounded-3xl p-6 md:p-8 
+                    border border-white/40 shadow-lg hover:shadow-2xl
+                    transform transition-all duration-500 hover:scale-105 hover:bg-white/40
+                    hover:-translate-y-2 cursor-pointer overflow-hidden`}
+                  data-testid={`core-value-card-${index}`}
+                >
+                  {/* Animated Background Overlay */}
+                  {/* Subtle gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 
+                    group-hover:from-white/10 group-hover:to-white/10 transition-all duration-500"></div>
+                  
+                  {/* Decorative blur circles */}
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#E9762B]/10 rounded-full blur-3xl 
+                    group-hover:bg-[#E9762B]/20 transition-all duration-700"></div>
+                  <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#41644A]/10 rounded-full blur-3xl 
+                    group-hover:bg-[#41644A]/20 transition-all duration-700"></div>
+                  
+                  {/* Content */}
+                  <div className="relative z-10 flex flex-col items-center text-center h-full">
+                    {/* Icon with gradient background */}
+                    <div className={`mb-4 md:mb-6 flex items-center justify-center h-16 w-16 md:h-20 md:w-20 
+                      rounded-full ${iconGradients[index]} shadow-lg
+                      group-hover:scale-110 group-hover:shadow-xl transition-all duration-500 shrink-0`}>
+                      <IconComponent className="h-8 w-8 md:h-10 md:w-10 text-white" />
+                    </div>
+
+                    {/* Title */}
+                    <h4 className="font-black text-lg sm:text-xl md:text-2xl text-[#0D4715] mb-3 md:mb-4 
+                      leading-tight uppercase tracking-tight group-hover:tracking-wide transition-all duration-300">
+                      {value.title}
+                    </h4>
+
+                    {/* Description */}
+                    <p className="text-xs sm:text-sm md:text-base text-[#41644A] leading-relaxed font-medium 
+                      group-hover:text-[#0D4715] transition-colors duration-300">
+                      {value.desc}
+                    </p>
+                  </div>
+
+                  {/* Glass shine effect */}
+                  <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent 
+                    opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-2xl md:rounded-t-3xl"></div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -52,7 +52,7 @@ export const services = [
 
 export const contactConfig = {
   phone: "+91 84310 72894",
-  servicesEmail: "services@cargopanda.in",
+  servicesEmail: "hemanth@cargopandalogistics.in",
   mediaEmail: "media@cargopanda.in",
   contactPerson: { name: "Hemanth A", designation: "Director" },
   address: "17 Sy. No 43/4 J K Halli, R.M. Nagar, Krishnarajapuram, Bangalore North, Bangalore, Karnataka, India – 560036"
